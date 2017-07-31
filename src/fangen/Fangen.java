@@ -7,13 +7,13 @@ import java.util.*;
 
 class Main {
 
-    public static void main (String[] args) throws java.lang.Exception {
+    public static void main(String[] args) throws java.lang.Exception {
 
 
-        DataCache cache = DataCacheFactory.getDataCache(DataCacheType.Deque);
+        DataCache cache = DataCacheFactory.getDataCache(DataCacheType.DEQUE);
         cache.collectDataFromUser();
 
-        WingedFanPrinter fanPrinter = WingedFanPrinterFactory.getWingedFanPrinter(FanPrinterType.QuadrupleSymmetry);
+        WingedFanPrinter fanPrinter = WingedFanPrinterFactory.getWingedFanPrinter(FanPrinterType.QUADRUPLE_SYMMETRY);
 
         while (cache.isNotEmpty())
 
@@ -22,36 +22,34 @@ class Main {
 }
 
 
-
-
 enum DataCacheType {
 
-    Deque,
+    DEQUE
 }
 
 
 enum FanPrinterType {
 
-    QuadrupleSymmetry,
+    QUADRUPLE_SYMMETRY
 }
 
 
 enum WingType {
 
-    AsteriskTriangle,
+    ASTERISK_TRIANGLE
 }
 
 
-
 enum FanRotation {
-    Clockwise,
-    Anticlockwise,
+    CLOCKWISE,
+    ANTICLOCKWISE
 }
 
 
 interface WingedFanPainter {
 
     ArrayList<String> paintWingPattern(int size);
+
     ArrayList<StringBuilder> paintEntireFan(ArrayList<String> wingPattern);
 }
 
@@ -65,8 +63,11 @@ interface WingedFanPrinter {
 interface DataCache {
 
     void collectDataFromUser();
+
     int getWingSize();
+
     FanRotation getFanRotation();
+
     boolean isNotEmpty();
 
 }
@@ -77,23 +78,22 @@ class WingedFanPrinterFactory {
 
     static WingedFanPrinter getWingedFanPrinter(FanPrinterType type) {
 
-		WingedFanPainter painter = WingPainterFactory.getWingPainter(WingType.AsteriskTriangle);
+        WingedFanPainter painter = WingPainterFactory.getWingPainter(WingType.ASTERISK_TRIANGLE);
 
-		if (type == FanPrinterType.QuadrupleSymmetry) {
-			return new WingedFanPrinterQuadrupleSymmetry(painter);
-		}
-		throw new IllegalArgumentException("Illegal FanPrinterType: " + type);
-	}
+        if (type == FanPrinterType.QUADRUPLE_SYMMETRY) {
+            return new WingedFanPrinterQuadrupleSymmetry(painter);
+        }
+        throw new IllegalArgumentException("Illegal FanPrinterType: " + type);
+    }
 
 }
 
 class WingPainterFactory {
 
 
-
     static WingedFanPainter getWingPainter(WingType type) {
 
-        if(type == WingType.AsteriskTriangle) {
+        if (type == WingType.ASTERISK_TRIANGLE) {
             return new WingedFanPainterAsteriskTriangle();
         }
 
@@ -106,7 +106,7 @@ class WingPainterFactory {
 
 class DataCacheFactory {
     public static DataCache getDataCache(DataCacheType type) {
-        if (type == DataCacheType.Deque) {
+        if (type == DataCacheType.DEQUE) {
             return new DequeDataCache();
         }
         throw new IllegalArgumentException("Illegal DataCacheType: " + type);
@@ -175,6 +175,7 @@ class WingedFanPrinterQuadrupleSymmetry implements WingedFanPrinter {
     WingedFanPrinterQuadrupleSymmetry(WingedFanPainter painter) {
         this.painter = painter;
     }
+
     @Override
     public void printFan(int size, FanRotation fanRotation) {
 
@@ -183,11 +184,13 @@ class WingedFanPrinterQuadrupleSymmetry implements WingedFanPrinter {
 
 
         switch (fanRotation) {
-            case Clockwise:
+            case CLOCKWISE:
                 break;
-            case Anticlockwise: Collections.reverse(fan);
+            case ANTICLOCKWISE:
+                Collections.reverse(fan);
                 break;
-            default: throw new IllegalArgumentException("Illegal FanDirectionType: " + fanRotation);
+            default:
+                throw new IllegalArgumentException("Illegal FanDirectionType: " + fanRotation);
         }
 
         fan.forEach(System.out::println);
@@ -207,16 +210,17 @@ class DequeDataCache implements DataCache {
     public void collectDataFromUser() {
 
         Scanner sc = new Scanner(System.in);
-        int number;
-        while (true){
+        Integer number;
+        while (true) {
             number = sc.nextInt();
             if (number != 0) {
                 deque.add(number);
             } else
 
-            break;
+                break;
         }
     }
+
     @Override
     public int getWingSize() {
         return Math.abs(deque.peek());
@@ -224,8 +228,9 @@ class DequeDataCache implements DataCache {
 
     @Override
     public FanRotation getFanRotation() {
-        return deque.poll() > 0 ? FanRotation.Clockwise : FanRotation.Anticlockwise;
+        return deque.poll() > 0 ? FanRotation.CLOCKWISE : FanRotation.ANTICLOCKWISE;
     }
+
     @Override
     public boolean isNotEmpty() {
         return !deque.isEmpty();
